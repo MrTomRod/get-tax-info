@@ -1,0 +1,1 @@
+recursive-include get_tax_info *.json

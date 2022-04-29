@@ -1,0 +1,66 @@
+{
+  "Bacteria": {
+    "dataset": "bacteria_odb9.tar.gz",
+    "taxid": 2
+  },
+  "Proteobacteria": {
+    "dataset": "proteobacteria_odb9.tar.gz",
+    "taxid": 1224
+  },
+  "Rhizobiales": {
+    "dataset": "rhizobiales_odb9.tar.gz",
+    "taxid": 356
+  },
+  "Betaproteobacteria": {
+    "dataset": "betaproteobacteria_odb9.tar.gz",
+    "taxid": 28216
+  },
+  "Gammaproteobacteria": {
+    "dataset": "gammaproteobacteria_odb9.tar.gz",
+    "taxid": 1236
+  },
+  "Enterobacteriales": {
+    "dataset": "enterobacteriales_odb9.tar.gz",
+    "taxid": 91347
+  },
+  "Delta+Epsilon proteobacteria": {
+    "dataset": "deltaepsilonsub_odb9.tar.gz",
+    "taxid": 68525
+  },
+  "Actinobacteria": {
+    "dataset": "actinobacteria_odb9.tar.gz",
+    "taxid": 201174
+  },
+  "Cyanobacteria": {
+    "dataset": "cyanobacteria_odb9.tar.gz",
+    "taxid": 1117
+  },
+  "Firmicutes": {
+    "dataset": "firmicutes_odb9.tar.gz",
+    "taxid": 1239
+  },
+  "Clostridia": {
+    "dataset": "clostridia_odb9.tar.gz",
+    "taxid": 186801
+  },
+  "Lactobacillales": {
+    "dataset": "lactobacillales_odb9.tar.gz",
+    "taxid": 186826
+  },
+  "Bacillales": {
+    "dataset": "bacillales_odb9.tar.gz",
+    "taxid": 1385
+  },
+  "Bacteroidetes": {
+    "dataset": "bacteroidetes_odb9.tar.gz",
+    "taxid": 976
+  },
+  "Spirochaetes": {
+    "dataset": "spirochaetes_odb9.tar.gz",
+    "taxid": 203691
+  },
+  "Tenericutes": {
+    "dataset": "tenericutes_odb9.tar.gz",
+    "taxid": 544448
+  }
+}
