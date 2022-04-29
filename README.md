@@ -15,7 +15,7 @@ variable `GET_TAX_INFO_DB` or by initiating the GetTaxInfo class with the parame
 
 ## Setup:
 ```bash
-pip install 
+pip install git+https://github.com/MrTomRod/get-tax-info
 ```
 
 ```python3
@@ -25,7 +25,7 @@ from get_tax_info import TaxID, GetTaxInfo
 gti = GetTaxInfo()
 
 # this will import a local file, or download the taxdump there
-gti = GetTaxInfo(db_path='/path/to/sqlite.db')
+gti = GetTaxInfo(db_path='~/.cache/get-tax-info.db')
 
 # this will import a local file, or download the taxdump there
 gti = GetTaxInfo(taxdump_tar='/path/to/taxdump.tar.gz')
