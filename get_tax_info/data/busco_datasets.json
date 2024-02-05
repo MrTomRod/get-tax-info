@@ -1,66 +1,101 @@
 {
-  "Bacteria": {
-    "dataset": "bacteria_odb9.tar.gz",
-    "taxid": 2
-  },
-  "Proteobacteria": {
-    "dataset": "proteobacteria_odb9.tar.gz",
-    "taxid": 1224
-  },
-  "Rhizobiales": {
-    "dataset": "rhizobiales_odb9.tar.gz",
-    "taxid": 356
-  },
-  "Betaproteobacteria": {
-    "dataset": "betaproteobacteria_odb9.tar.gz",
-    "taxid": 28216
-  },
-  "Gammaproteobacteria": {
-    "dataset": "gammaproteobacteria_odb9.tar.gz",
-    "taxid": 1236
-  },
-  "Enterobacteriales": {
-    "dataset": "enterobacteriales_odb9.tar.gz",
-    "taxid": 91347
-  },
-  "Delta+Epsilon proteobacteria": {
-    "dataset": "deltaepsilonsub_odb9.tar.gz",
-    "taxid": 68525
-  },
-  "Actinobacteria": {
-    "dataset": "actinobacteria_odb9.tar.gz",
-    "taxid": 201174
-  },
-  "Cyanobacteria": {
-    "dataset": "cyanobacteria_odb9.tar.gz",
-    "taxid": 1117
-  },
-  "Firmicutes": {
-    "dataset": "firmicutes_odb9.tar.gz",
-    "taxid": 1239
-  },
-  "Clostridia": {
-    "dataset": "clostridia_odb9.tar.gz",
-    "taxid": 186801
-  },
-  "Lactobacillales": {
-    "dataset": "lactobacillales_odb9.tar.gz",
-    "taxid": 186826
-  },
-  "Bacillales": {
-    "dataset": "bacillales_odb9.tar.gz",
-    "taxid": 1385
-  },
-  "Bacteroidetes": {
-    "dataset": "bacteroidetes_odb9.tar.gz",
-    "taxid": 976
-  },
-  "Spirochaetes": {
-    "dataset": "spirochaetes_odb9.tar.gz",
-    "taxid": 203691
-  },
-  "Tenericutes": {
-    "dataset": "tenericutes_odb9.tar.gz",
-    "taxid": 544448
-  }
+    "186802": "clostridiales_odb10",
+    "1239": "firmicutes_odb10",
+    "2085": "mycoplasmatales_odb10",
+    "201174": "actinobacteria_phylum_odb10",
+    "200643": "bacteroidia_odb10",
+    "1090": "chlorobi_odb10",
+    "135613": "chromatiales_odb10",
+    "2191": "methanomicrobiales_odb10",
+    "57723": "acidobacteria_odb10",
+    "183967": "thermoplasmata_odb10",
+    "85007": "corynebacteriales_odb10",
+    "544448": "tenericutes_odb10",
+    "91347": "enterobacterales_odb10",
+    "72274": "pseudomonadales_odb10",
+    "356": "rhizobiales_odb10",
+    "1760": "actinobacteria_class_odb10",
+    "85006": "micrococcales_odb10",
+    "85012": "streptosporangiales_odb10",
+    "204428": "chlamydiae_odb10",
+    "200795": "chloroflexi_odb10",
+    "2266": "thermoproteales_odb10",
+    "2281": "sulfolobales_odb10",
+    "768507": "cytophagales_odb10",
+    "206351": "neisseriales_odb10",
+    "1890424": "synechococcales_odb10",
+    "213115": "desulfovibrionales_odb10",
+    "114380": "desulfurococcales_odb10",
+    "186801": "clostridia_odb10",
+    "135623": "vibrionales_odb10",
+    "768503": "cytophagia_odb10",
+    "204457": "sphingomonadales_odb10",
+    "224756": "methanomicrobia_odb10",
+    "68295": "thermoanaerobacterales_odb10",
+    "1161": "nostocales_odb10",
+    "72273": "thiotrichales_odb10",
+    "117743": "flavobacteriia_odb10",
+    "203491": "fusobacteriales_odb10",
+    "227290": "rhizobium-agrobacterium_group_odb10",
+    "29547": "epsilonproteobacteria_odb10",
+    "1706369": "cellvibrionales_odb10",
+    "74201": "verrucomicrobia_odb10",
+    "117747": "sphingobacteriia_odb10",
+    "28890": "euryarchaeota_odb10",
+    "2": "bacteria_odb10",
+    "187857": "aquificae_odb10",
+    "183924": "thermoprotei_odb10",
+    "200918": "thermotogae_odb10",
+    "84999": "coriobacteriales_odb10",
+    "1385": "bacillales_odb10",
+    "204455": "rhodobacterales_odb10",
+    "1117": "cyanobacteria_odb10",
+    "69541": "desulfuromonadales_odb10",
+    "186826": "lactobacillales_odb10",
+    "136": "spirochaetales_odb10",
+    "203692": "spirochaetia_odb10",
+    "68525": "delta-epsilon-subdivisions_odb10",
+    "1737405": "tissierellales_odb10",
+    "213118": "desulfobacterales_odb10",
+    "28216": "betaproteobacteria_odb10",
+    "213849": "campylobacterales_odb10",
+    "766": "rickettsiales_odb10",
+    "203682": "planctomycetes_odb10",
+    "91061": "bacilli_odb10",
+    "135619": "oceanospirillales_odb10",
+    "2235": "halobacteriales_odb10",
+    "1644060": "natrialbales_odb10",
+    "135614": "xanthomonadales_odb10",
+    "200644": "flavobacteriales_odb10",
+    "135622": "alteromonadales_odb10",
+    "183963": "halobacteria_odb10",
+    "28221": "deltaproteobacteria_odb10",
+    "80840": "burkholderiales_odb10",
+    "203691": "spirochaetes_odb10",
+    "186328": "entomoplasmatales_odb10",
+    "1236": "gammaproteobacteria_odb10",
+    "2157": "archaea_odb10",
+    "2182": "methanococcales_odb10",
+    "85009": "propionibacteriales_odb10",
+    "1737404": "tissierellia_odb10",
+    "135625": "pasteurellales_odb10",
+    "118969": "legionellales_odb10",
+    "976": "bacteroidetes_odb10",
+    "32003": "nitrosomonadales_odb10",
+    "651137": "thaumarchaeota_odb10",
+    "183925": "methanobacteria_odb10",
+    "909929": "selenomonadales_odb10",
+    "68336": "bacteroidetes-chlorobi_group_odb10",
+    "28211": "alphaproteobacteria_odb10",
+    "31969": "mollicutes_odb10",
+    "204441": "rhodospirillales_odb10",
+    "85011": "streptomycetales_odb10",
+    "508458": "synergistetes_odb10",
+    "32066": "fusobacteria_odb10",
+    "84998": "coriobacteriia_odb10",
+    "1644055": "haloferacales_odb10",
+    "171549": "bacteroidales_odb10",
+    "1224": "proteobacteria_odb10",
+    "1150": "oscillatoriales_odb10",
+    "1118": "chroococcales_odb10"
 }

@@ -90,31 +90,6 @@ class TestGetTaxInfo(TestCase):
         self.assertEqual(1, parent)
         self.assertEqual("no rank", rank)
 
-    # test get_busco_dataset()
-    def test_get_busco_dataset_filename(self):
-        # Lactobacillus paracasei
-        self.assertEqual("lactobacillales_odb9.tar.gz", self.gt.get_busco_dataset_filename(1597))
-
-    def test_get_busco_dataset_title(self):
-        # Lactobacillus paracasei
-        self.assertEqual("Lactobacillales", self.gt.get_busco_dataset_title(1597))
-
-    def test_get_busco_dataset(self):
-        # Lactobacillus paracasei
-        filename, title = self.gt.get_busco_dataset(1597)
-        self.assertEqual("lactobacillales_odb9.tar.gz", filename)
-        self.assertEqual("Lactobacillales", title)
-
-    def test_get_busco_dataset_nonexistent_taxid(self):
-        # nonexistent taxid: 3
-        with self.assertRaises(TaxIdNnotFoundError):
-            self.gt.get_busco_dataset(3)
-
-    def test_get_busco_dataset_nonexistent_busco_parent(self):
-        # root-node has no busco-parent: 1
-        with self.assertRaises(BuscoParentNotFoundError):
-            self.gt.get_busco_dataset_filename(1)
-
     def test_get_taxid(self):
         taxid, scientific_name, unique_name, parent, rank = self.gt.get_taxid_values_by_unique_name(
             "Bacteria <bacteria>")

@@ -1,7 +1,6 @@
 import os
-import json
 import sqlite3
-from .utils import ROOT, TaxIdNnotFoundError, UniqueNameNotFoundError, NameNotFoundError, BuscoParentNotFoundError
+from .utils import ROOT, TaxIdNnotFoundError, UniqueNameNotFoundError, NameNotFoundError
 
 
 class GetTaxInfo:
@@ -9,8 +8,6 @@ class GetTaxInfo:
     Get information about NCBI TaxIDs from names.dmp and nodes.dmp.
 
     These text files are downloaded on first use and converted into a SQLite-database for efficient lookups.
-
-    Can also find the best BUSCO (busco.ezlab.org) dataset for a given taxid.
 
     Layout of the database:
     --------------
@@ -36,13 +33,6 @@ class GetTaxInfo:
                 self.update_ncbi_taxonomy_from_file(taxdump_tar)
             else:
                 self.update_ncbi_taxonomy_from_web()
-
-        with open(f'{ROOT}/data/busco_datasets.json') as f:
-            busco_dataset = json.load(f)
-
-        self.taxid_to_busco_dataset_name = {busco_dataset[ds_name]['taxid']: ds_name for ds_name in busco_dataset}
-        self.taxid_to_busco_dataset_filename = {busco_dataset[ds_name]['taxid']: busco_dataset[ds_name]['dataset'] for
-                                                ds_name in busco_dataset}
 
         self.db = sqlite3.connect(self.sqlite_db, uri=True).cursor()  # uri=True means read-only mode
 
@@ -183,29 +173,6 @@ class GetTaxInfo:
             return []
 
         return taxids
-
-    def get_busco_dataset(self, taxid: int) -> (str, str):
-        """:returns: tuple(filename, title) of the best BUSCO dataset or :raises: TaxIdNnotFoundError"""
-        orig_taxid = taxid
-        while taxid not in self.taxid_to_busco_dataset_name and taxid != 1:
-            taxid = self.get_parent(taxid)
-        try:
-            filename = self.taxid_to_busco_dataset_filename[taxid]
-            title = self.taxid_to_busco_dataset_name[taxid]
-        except KeyError:
-            raise BuscoParentNotFoundError('queried taxid: {}, final taxid: {}'.format(taxid, orig_taxid))
-
-        return filename, title
-
-    def get_busco_dataset_filename(self, taxid: int) -> str:
-        """:returns: filename of the best BUSCO dataset :raises: TaxIdNnotFoundError"""
-        filename, title = self.get_busco_dataset(taxid)
-        return filename
-
-    def get_busco_dataset_title(self, taxid: int) -> str:
-        """:returns: title of the best BUSCO dataset :raises: TaxIdNnotFoundError"""
-        filename, title = self.get_busco_dataset(taxid)
-        return title
 
     def update_ncbi_taxonomy_from_web(self):
         """

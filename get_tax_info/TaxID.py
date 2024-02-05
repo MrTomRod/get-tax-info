@@ -1,3 +1,6 @@
+from functools import cached_property
+
+
 class TaxID:
     """
     TaxID objects represent a NCBI TaxID.
@@ -44,6 +47,14 @@ class TaxID:
             return None
         else:
             return TaxID(taxid=self.parent_taxid)
+
+    @cached_property
+    def depth(self) -> int:
+        """:returns: int of depth in taxonomy"""
+        if self.taxid == 1:
+            return 0
+        else:
+            return self.parent.depth + 1
 
     @property
     def children(self) -> list:

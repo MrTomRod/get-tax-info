@@ -13,7 +13,21 @@ By default, the SQlite database will be saved to wherever `get-tax-info` is inst
 environment). Alternatively, the desired location of the database can be chosen by setting the environment
 variable `GET_TAX_INFO_DB` or by initiating the GetTaxInfo class with the parameter `db_path`.
 
+For BUSCO, the TaxID is used to determine the best BUSCO dataset. This is done by finding the most recent ancestor of 
+the TaxID that has a BUSCO dataset. The data is taken from an existing BUSCO installation. Run the following command to
+get the BUSCO datasets:
+
+```bash
+BUSCO_DOWNLOAD_PATH=/path/to/busco_downloads
+# Download the BUSCO datasets
+busco --download prokaryota --download_path $BUSCO_DOWNLOAD_PATH
+# Update the cache based on the downloaded lineages
+get-tax-info taxid_to_busco_dataset --taxid 110 --busco_download_path $BUSCO_DOWNLOAD_PATH
+``` 
+
+
 ## Setup:
+
 ```bash
 pip install git+https://github.com/MrTomRod/get-tax-info
 ```
@@ -37,11 +51,38 @@ gti = GetTaxInfo(reload_data=True)
 
 ## Usage:
 
+```bash
+$ get-tax-info taxid_to_busco_dataset --taxid 110
+rhizobiales_odb10
+
+$ get-tax-info add_taxid_column table.tsv --sep ,
+Preview:
+Identifier         Barcode                     Species
+0  SAMPLE1  bc2041--bc2041  Streptococcus thermophilus
+1  SAMPLE2  bc2042--bc2042  Streptococcus thermophilus
+2  SAMPLE3  bc2043--bc2043   Leuconostoc mesenteroides
+3  SAMPLE4  bc2044--bc2044             Pseudomonas sp.
+4  SAMPLE5  bc2045--bc2045             Clostridium sp.
+
+Adding TaxID column...
+Could not find Bacillus sp. in the database. Please provide the taxid: 1409
+
+Preview:
+Identifier         Barcode                     Species  TaxID          BUSCO_dataset
+0  SAMPLE1  bc2041--bc2041  Streptococcus thermophilus   1308  lactobacillales_odb10
+1  SAMPLE2  bc2042--bc2042  Streptococcus thermophilus   1308  lactobacillales_odb10
+2  SAMPLE3  bc2043--bc2043   Leuconostoc mesenteroides   1245  lactobacillales_odb10
+3  SAMPLE4  bc2044--bc2044             Pseudomonas sp.   306   pseudomonadales_odb10
+4  SAMPLE5  bc2045--bc2045             Clostridium sp.   1506    clostridiales_odb10
+
+Wrote table.tsv.addcol
+```
+
 ```python3
 # load class
-from get_tax_info import TaxID, GetTaxInfo
+from get_tax_info import TaxID, GetBusco
 
-gti = GetTaxInfo()
+gti = GetBusco()
 TaxID.gti = gti  # Edit TaxID-class: give it a GetTaxInfo-instance
 
 ## Use TaxID class (recommended):
@@ -65,6 +106,5 @@ gti.get_parent(taxid=2590146)  # 483517
 
 # taxid -> best BUSCO dataset (arguably not necessary anymore as BUSCO has autodetect mechanism)
 # 1597 = Lactobacillus paracasei
-gti.get_busco_dataset_filename(1597)  # lactobacillales_odb9.tar.gz
-gti.get_busco_dataset_title(1597)  # Lactobacillales
+gti.get_busco_dataset(1597)  # lactobacillales_odb10
 ```

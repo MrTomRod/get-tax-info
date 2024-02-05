@@ -27,10 +27,10 @@ setup(
     ],
     packages=['get_tax_info'],
     include_package_data=True,  # see MANIFEST.in
-    install_requires=[],
+    install_requires=[],  # pandas is only needed to add columns to csv
     entry_points={
         'console_scripts': [
-            'get-tax-info=get_tax_info.get_tax_info:main',
+            'get-tax-info=get_tax_info.cli:main',
         ]
     },
 )
