@@ -52,10 +52,10 @@ gti = GetTaxInfo(reload_data=True)
 ## Usage:
 
 ```bash
-$ get-tax-info taxid_to_busco_dataset --taxid 110
+$ get-tax-info taxid-to-busco-dataset --taxid 110
 rhizobiales_odb10
 
-$ get-tax-info add_taxid_column table.tsv --sep ,
+$ get-tax-info add-taxid-column table.tsv --sep ,
 Preview:
 Identifier         Barcode                     Species
 0  SAMPLE1  bc2041--bc2041  Streptococcus thermophilus
