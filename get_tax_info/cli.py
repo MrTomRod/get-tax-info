@@ -71,6 +71,11 @@ def add_taxid_busco_column(
         print(f'Adding {taxid_column} column...')
         df[taxid_column] = df[species_column].apply(species_to_taxid)
 
+    if species_column not in df.columns:
+        assert taxid_column in df.columns, f'{species_column=} and {taxid_column=} not in {df.columns=}'
+        print(f'Adding {species_column} column...')
+        df[species_column] = df[taxid_column].apply(lambda t: gb.get_taxid_values_by_id(t)[1])
+
     df[busco_column] = df[taxid_column].apply(lambda t: gb.get_busco_dataset(t))
 
     print(f'\nPreview:\n{df.head()}\n')
