@@ -189,7 +189,7 @@ class GetTaxInfo:
 
         # Download taxdump.tar.gz as temporary file
         f_taxdump = tempfile.TemporaryFile(suffix='.tar.gz', mode='w+b')
-        print('Downloading taxdump.tar.gz from ftp.ncbi.nlm.nih.gov...')
+        print('Downloading taxdump.tar.gz from ftp.ncbi.nlm.nih.gov to temp...')
         with urllib.request.urlopen('ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz') as repsonse:
             shutil.copyfileobj(repsonse, f_taxdump)
 

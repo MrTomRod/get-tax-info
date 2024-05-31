@@ -1,9 +1,23 @@
-"""
-Input: taxid
-Output: busco dataset name
-"""
 from get_tax_info import UniqueNameNotFoundError
+from get_tax_info.GetTaxInfo import GetTaxInfo
 from get_tax_info.GetBusco import GetBusco
+
+
+def init(
+        db_path: str = None,
+        taxdump_tar: str = None,
+        reload_data: bool = False
+) -> str:
+    """
+    :param taxid: int of taxid
+    :returns: str of busco dataset name
+    """
+    gt = GetTaxInfo(
+        db_path=db_path,
+        taxdump_tar=taxdump_tar,
+        reload_data=reload_data
+    )
+    return 'Done!'
 
 
 def taxid_to_busco_dataset(
@@ -89,6 +103,7 @@ def main():
     from fire import Fire
 
     Fire({
+        'init': init,
         'taxid-to-busco-dataset': taxid_to_busco_dataset,
         'add-taxid-column': add_taxid_busco_column
     })
