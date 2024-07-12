@@ -34,7 +34,7 @@ class GetTaxInfo:
             else:
                 self.update_ncbi_taxonomy_from_web()
 
-        self.db = sqlite3.connect(self.sqlite_db, uri=True).cursor()  # uri=True means read-only mode
+        self.db = sqlite3.connect(self.sqlite_db, uri=True, check_same_thread=False).cursor()  # uri=True means read-only mode
 
     def __del__(self):
         if hasattr(self, 'db'):
@@ -262,7 +262,7 @@ class GetTaxInfo:
 
         assert not os.path.isfile(self.sqlite_db)
 
-        db = sqlite3.connect(self.sqlite_db)
+        db = sqlite3.connect(self.sqlite_db, check_same_thread=False)
         try:
             cursor = db.cursor()
             cursor.execute('''
