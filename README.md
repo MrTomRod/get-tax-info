@@ -45,5 +45,7 @@ get-tax-info taxid-to-busco-dataset --taxid 110
 get-tax-info add-taxid-column table.tsv --sep ,
 ```
 
+A complete demonstration of the BUSCO workflow (including Podman usage) can be found in [demo_busco_workflow.sh](demo_busco_workflow.sh).
+
 ---
 *Note: BUSCO dataset mapping requires pre-downloaded lineages. See [get_busco.py](get_tax_info/get_busco.py) for details.*

@@ -27,12 +27,31 @@ def load_lineages_to_json(out_json: str, busco_download_path: str = 'busco_downl
     '''
 
     def extract_taxid(lineage):
-        hmm_file = os.listdir(f'{busco_download_path}/lineages/{lineage}/hmms')[0]  # e.g. 26885at28221.hmm -> lineage taxid is 28221
-        return int(hmm_file.split('at')[1].split('.')[0])
+        # Try dataset.cfg first (BUSCO 6 / odb12)
+        cfg_path = os.path.join(busco_download_path, 'lineages', lineage, 'dataset.cfg')
+        if os.path.isfile(cfg_path):
+            with open(cfg_path) as f:
+                for line in f:
+                    if line.startswith('ncbi_taxid='):
+                        return int(line.split('=')[1].strip())
 
-    busco_dataset = {extract_taxid(lineage): lineage for lineage in os.listdir(f'{busco_download_path}/lineages')}
+        # Fallback to HMM filename parsing
+        hmm_dir = os.path.join(busco_download_path, 'lineages', lineage, 'hmms')
+        if os.path.isdir(hmm_dir):
+            hmms = os.listdir(hmm_dir)
+            if hmms:
+                hmm_file = hmms[0]
+                if 'at' in hmm_file:
+                    return int(hmm_file.split('at')[1].split('.')[0])
+        return None
 
-    print('Loaded {len(busco_dataset)} BUSCO datasets.')
+    busco_dataset = {}
+    for lineage in os.listdir(os.path.join(busco_download_path, 'lineages')):
+        taxid = extract_taxid(lineage)
+        if taxid is not None:
+            busco_dataset[taxid] = lineage
+
+    print(f'Loaded {len(busco_dataset)} BUSCO datasets.')
 
     with open(out_json, 'w') as f:
         json.dump(busco_dataset, f, indent=4)
@@ -49,7 +68,8 @@ class GetBusco(GetTaxInfo):
             cache_dir = platformdirs.user_cache_dir('get-tax-info')
             self._busco_datasets_json = os.path.join(cache_dir, 'busco_datasets.json')
 
-        if not os.path.isfile(self._busco_datasets_json):
+        reload_data = kwargs.get('reload_data', False)
+        if not os.path.isfile(self._busco_datasets_json) or reload_data:
             if busco_download_path is None:
                 busco_download_path = os.environ.get('BUSCO_DOWNLOAD_PATH', 'busco_downloads')
             load_lineages_to_json(self._busco_datasets_json, busco_download_path)

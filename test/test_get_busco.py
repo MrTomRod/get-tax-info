@@ -3,8 +3,13 @@ from get_tax_info import GetBusco, TaxIdNnotFoundError, BuscoParentNotFoundError
 
 @pytest.fixture(scope="module")
 def gb():
-    """Fixture for GetBusco instance."""
+    """Fixture for GetBusco instance with mocked datasets."""
     instance = GetBusco()
+    # Mocking the dataset mapping so tests are independent of local cache
+    instance.busco_dataset = {
+        2: "bacteria_odb10",
+        186826: "lactobacillales_odb10"
+    }
     yield instance
     instance.close()
 
