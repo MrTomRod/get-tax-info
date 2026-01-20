@@ -1,5 +1,7 @@
 import os
 import sqlite3
+import platformdirs
+from .tax_id import TaxID
 from .utils import ROOT, TaxIdNnotFoundError, UniqueNameNotFoundError, NameNotFoundError
 
 
@@ -25,9 +27,12 @@ class GetTaxInfo:
 
     def __init__(self, db_path: str = None, taxdump_tar: str = None, reload_data: bool = False):
         if db_path is None:
-            db_path = os.environ.get('GET_TAX_INFO_DB', f'{ROOT}/data/taxdump.db')
+            cache_dir = platformdirs.user_cache_dir('get-tax-info')
+            os.makedirs(cache_dir, exist_ok=True)
+            db_path = os.environ.get('GET_TAX_INFO_DB', os.path.join(cache_dir, 'taxdump.db'))
         self.sqlite_db = os.path.expanduser(db_path)
 
+            
         if reload_data or not os.path.isfile(self.sqlite_db):
             if taxdump_tar:
                 self.update_ncbi_taxonomy_from_file(taxdump_tar)
@@ -36,6 +41,9 @@ class GetTaxInfo:
 
         self.conn = sqlite3.connect(self.sqlite_db, uri=True, check_same_thread=False)
         self.db = self.conn.cursor()  # self.db is the cursor for backwards compatibility
+
+    def get_taxid_object(self, taxid: int):
+        return TaxID(taxid=taxid, gti=self)
 
     def close(self):
         if hasattr(self, 'conn'):

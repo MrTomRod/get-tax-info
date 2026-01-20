@@ -8,39 +8,34 @@ def gti():
     yield instance
     instance.close()
 
-@pytest.fixture(autouse=True)
-def setup_taxid(gti):
-    """Automatically set TaxID.gti for all tests."""
-    TaxID.gti = gti
-
 class TestTaxID:
     def test_simple_setup(self):
         TaxID(taxid=0, scientific_name='test', unique_name='uniq', parent_taxid=1, rank='rank')
 
-    def test_dynamic_setup(self):
-        t = TaxID(taxid=2590146)
+    def test_dynamic_setup(self, gti):
+        t = TaxID(taxid=2590146, gti=gti)
         assert t.scientific_name == "Ektaphelenchus kanzakii"
 
-    def test_parent(self):
-        t = TaxID(taxid=2590146)
+    def test_parent(self, gti):
+        t = TaxID(taxid=2590146, gti=gti)
         p = t.parent
         assert p.taxid == 483517
 
-    def test_children(self):
-        t = TaxID(taxid=483517)
+    def test_children(self, gti):
+        t = TaxID(taxid=483517, gti=gti)
         children = t.children
         assert len(children) > 0
         for child in children:
             assert isinstance(child.taxid, int)
 
-    def test_rank(self):
-        t = TaxID(taxid=2590146)
+    def test_rank(self, gti):
+        t = TaxID(taxid=2590146, gti=gti)
         r = t.tax_at_rank('genus')
         assert r.rank == 'genus'
         assert r.scientific_name == 'Ektaphelenchus'
 
-    def test_nonexistent_rank(self):
-        t = TaxID(taxid=2590146)
+    def test_nonexistent_rank(self, gti):
+        t = TaxID(taxid=2590146, gti=gti)
         with pytest.raises(KeyError):
             t.tax_at_rank('yolo')
 

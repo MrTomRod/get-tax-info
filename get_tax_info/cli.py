@@ -1,6 +1,6 @@
 from get_tax_info.utils import UniqueNameNotFoundError
-from get_tax_info.GetTaxInfo import GetTaxInfo
-from get_tax_info.GetBusco import GetBusco
+from get_tax_info.get_tax_info import GetTaxInfo
+from get_tax_info.get_busco import GetBusco
 
 
 def init(

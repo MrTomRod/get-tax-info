@@ -2,8 +2,8 @@
 import json
 import os.path
 
-from .GetTaxInfo import GetTaxInfo
-from .TaxID import TaxID
+from .get_tax_info import GetTaxInfo, platformdirs
+from .tax_id import TaxID
 from .utils import BuscoParentNotFoundError, ROOT, UniqueNameNotFoundError, query_options
 
 """
@@ -40,11 +40,14 @@ def load_lineages_to_json(out_json: str, busco_download_path: str = 'busco_downl
 
 class GetBusco(GetTaxInfo):
     busco_dataset: {int: str}
-    _busco_datasets_json = f'{ROOT}/data/busco_datasets.json'
+    _busco_datasets_json = None
 
     def __init__(self, *args, busco_download_path: str = None, **kwargs):
         super().__init__(*args, **kwargs)
-        TaxID.gti = self
+
+        if self._busco_datasets_json is None:
+            cache_dir = platformdirs.user_cache_dir('get-tax-info')
+            self._busco_datasets_json = os.path.join(cache_dir, 'busco_datasets.json')
 
         if not os.path.isfile(self._busco_datasets_json):
             if busco_download_path is None:

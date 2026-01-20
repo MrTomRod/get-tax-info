@@ -17,9 +17,7 @@ build/
 *.egg-info/
 
 # Project Specific
-get_tax_info/data/barcode*
-get_tax_info/data/taxd*
-sqlite.db
+.bkp/
 
 # IDEs
 .idea/

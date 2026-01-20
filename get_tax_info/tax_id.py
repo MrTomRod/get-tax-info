@@ -15,15 +15,17 @@ class TaxID:
     A TaxID has the following functions:
         tax_at_rank(rank) -> TaxID object of ancestor who has given rank
     """
-    gti = None  # Has to be set before first use.
 
     def __init__(
             self, taxid: int = None,
             scientific_name: str = None,
             unique_name: str = None,
             parent_taxid: int = None,
-            rank: str = None
+            rank: str = None,
+            gti=None
     ):
+        if gti is not None:
+            self.gti = gti
 
         if None in [taxid, scientific_name, unique_name, parent_taxid, rank]:
             if taxid is not None:
@@ -46,7 +48,7 @@ class TaxID:
         if self.taxid == 1:
             return None
         else:
-            return TaxID(taxid=self.parent_taxid)
+            return TaxID(taxid=self.parent_taxid, gti=self.gti)
 
     @cached_property
     def depth(self) -> int:
@@ -59,7 +61,7 @@ class TaxID:
     @property
     def children(self) -> list:
         """:returns: list of children's TaxIDs"""
-        return [TaxID(*taxid) for taxid in self.gti.get_children_by_id(self.taxid)]
+        return [TaxID(*taxid, gti=self.gti) for taxid in self.gti.get_children_by_id(self.taxid)]
 
     def tax_at_rank(self, rank: str):
         """:returns: TaxID of ancestor with :param rank"""
