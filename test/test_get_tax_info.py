@@ -1,105 +1,101 @@
-from unittest import TestCase
-from get_tax_info import *
+import pytest
+from get_tax_info import TaxID, GetTaxInfo, TaxIdNnotFoundError
 
+@pytest.fixture(scope="module")
+def gti():
+    """Fixture for GetTaxInfo instance."""
+    instance = GetTaxInfo()
+    yield instance
+    instance.close()
 
-class TestTaxID(TestCase):
-    def setUp(self) -> None:
-        TaxID.gti = GetTaxInfo()
+@pytest.fixture(autouse=True)
+def setup_taxid(gti):
+    """Automatically set TaxID.gti for all tests."""
+    TaxID.gti = gti
 
+class TestTaxID:
     def test_simple_setup(self):
         TaxID(taxid=0, scientific_name='test', unique_name='uniq', parent_taxid=1, rank='rank')
 
     def test_dynamic_setup(self):
         t = TaxID(taxid=2590146)
-        self.assertEqual("Ektaphelenchus kanzakii", t.scientific_name)
+        assert t.scientific_name == "Ektaphelenchus kanzakii"
 
     def test_parent(self):
         t = TaxID(taxid=2590146)
         p = t.parent
-        self.assertEqual(483517, p.taxid)
+        assert p.taxid == 483517
 
     def test_children(self):
         t = TaxID(taxid=483517)
         children = t.children
-        self.assertTrue(len(children) > 0)
+        assert len(children) > 0
         for child in children:
-            self.assertTrue(type(child.taxid) is int)
+            assert isinstance(child.taxid, int)
 
     def test_rank(self):
         t = TaxID(taxid=2590146)
         r = t.tax_at_rank('genus')
-        self.assertEqual('genus', r.rank)
-        self.assertEqual('Ektaphelenchus', r.scientific_name)
+        assert r.rank == 'genus'
+        assert r.scientific_name == 'Ektaphelenchus'
 
     def test_nonexistent_rank(self):
         t = TaxID(taxid=2590146)
-        with self.assertRaises(KeyError):
-            r = t.tax_at_rank('yolo')
+        with pytest.raises(KeyError):
+            t.tax_at_rank('yolo')
 
+class TestGetTaxInfo:
+    def test_get_names_first_entry(self, gti):
+        assert gti.get_scientific_name(taxid=1) == "root"
 
-class TestGetTaxInfo(TestCase):
-    def setUp(self) -> None:
-        self.gt = GetTaxInfo()
-        # self.gt = GetTaxInfo(taxdump_tar='../data/taxdump.tar.gz')
+    def test_get_names_last_entry(self, gti):
+        assert gti.get_scientific_name(taxid=2590146) == "Ektaphelenchus kanzakii"
+        assert gti.get_unique_name(taxid=2590146) == "Ektaphelenchus kanzakii"
 
-    def tearDown(self) -> None:
-        pass
+    def test_get_names_regular(self, gti):
+        assert gti.get_scientific_name(taxid=2) == "Bacteria"
+        assert gti.get_unique_name(taxid=2) == "Bacteria <bacteria>"
 
-    # test names
-    def test_get_names_first_entry(self):
-        self.assertEqual("root", self.gt.get_scientific_name(taxid=1))
+    def test_get_names_nonexistent_entry(self, gti):
+        with pytest.raises(TaxIdNnotFoundError):
+            gti.get_scientific_name(taxid=3)
+        with pytest.raises(TaxIdNnotFoundError):
+            gti.get_unique_name(taxid=3)
 
-    def test_get_names_last_entry(self):
-        self.assertEqual("Ektaphelenchus kanzakii", self.gt.get_scientific_name(taxid=2590146))
-        self.assertEqual("Ektaphelenchus kanzakii", self.gt.get_unique_name(taxid=2590146))
+    def test_get_parent_and_rank_first_entry(self, gti):
+        parent = gti.get_parent(taxid=1)
+        rank = gti.get_rank(taxid=1)
+        assert parent == 1
+        assert rank == "no rank"
 
-    def test_get_names_regular(self):
-        self.assertEqual("Bacteria", self.gt.get_scientific_name(taxid=2))
-        self.assertEqual("Bacteria <bacteria>", self.gt.get_unique_name(taxid=2))
+    def test_get_parent_and_rank_last_entry(self, gti):
+        parent = gti.get_parent(taxid=2590146)
+        rank = gti.get_rank(taxid=2590146)
+        assert parent == 483517
+        assert rank == "species"
 
-    def test_get_names_nonexistent_entry(self):
-        with self.assertRaises(TaxIdNnotFoundError):
-            self.gt.get_scientific_name(taxid=3)
-        with self.assertRaises(TaxIdNnotFoundError):
-            self.gt.get_unique_name(taxid=3)
+    def test_get_parent_and_rank_regular_entry(self, gti):
+        parent = gti.get_parent(taxid=2)
+        rank = gti.get_rank(taxid=2)
+        assert parent == 131567
+        assert rank == "domain"
 
-    # test parent and rank
-    def test_get_parent_and_rank_first_entry(self):
-        parent = self.gt.get_parent(taxid=1)
-        rank = self.gt.get_rank(taxid=1)
-        self.assertEqual(1, parent)
-        self.assertEqual("no rank", rank)
+    def test_get_info_first(self, gti):
+        taxid, scientific_name, unique_name, parent, rank = gti.get_taxid_values_by_id(taxid=1)
+        assert scientific_name == "root"
+        assert unique_name == "root"
+        assert parent == 1
+        assert rank == "no rank"
 
-    def test_get_parent_and_rank_last_entry(self):
-        parent = self.gt.get_parent(taxid=2590146)
-        rank = self.gt.get_rank(taxid=2590146)
-        self.assertEqual(483517, parent)
-        self.assertEqual("species", rank)
-
-    def test_get_parent_and_rank_regular_entry(self):
-        parent = self.gt.get_parent(taxid=2)
-        rank = self.gt.get_rank(taxid=2)
-        self.assertEqual(131567, parent)
-        self.assertEqual("superkingdom", rank)
-
-    # test get_info()
-    def test_get_info_first(self):
-        taxid, scientific_name, unique_name, parent, rank = self.gt.get_taxid_values_by_id(taxid=1)
-        self.assertEqual("root", scientific_name)
-        self.assertEqual("root", unique_name)
-        self.assertEqual(1, parent)
-        self.assertEqual("no rank", rank)
-
-    def test_get_taxid(self):
-        taxid, scientific_name, unique_name, parent, rank = self.gt.get_taxid_values_by_unique_name(
+    def test_get_taxid(self, gti):
+        taxid, scientific_name, unique_name, parent, rank = gti.get_taxid_values_by_unique_name(
             "Bacteria <bacteria>")
-        self.assertEqual((2), taxid)
+        assert taxid == 2
 
-    def test_taxid_search(self):
-        result = self.gt.query_taxid_unique_names('porolactobacillus', rank='genus', startswith=False)
-        self.assertEqual([(2077, 'Sporolactobacillus', 'Sporolactobacillus', 186821, 'genus')], result)
+    def test_taxid_search(self, gti):
+        result = gti.query_taxid_unique_names('porolactobacillus', rank='genus', startswith=False)
+        assert result == [(2077, 'Sporolactobacillus', 'Sporolactobacillus', 186821, 'genus')]
 
-    def test_taxid_search_nonexistent(self):
-        # this function doesn't throw an error but returns an empty list
-        result = self.gt.query_taxid_unique_names('porolactobacillus', rank='genus', startswith=True)
-        self.assertEqual([], result)
+    def test_taxid_search_nonexistent(self, gti):
+        result = gti.query_taxid_unique_names('porolactobacillus', rank='genus', startswith=True)
+        assert result == []

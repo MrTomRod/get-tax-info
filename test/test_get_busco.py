@@ -1,31 +1,24 @@
-from unittest import TestCase
-from get_tax_info import *
-from get_tax_info.GetBusco import load_lineages_to_json
-from get_tax_info.utils import ROOT
+import pytest
+from get_tax_info import GetBusco, TaxIdNnotFoundError, BuscoParentNotFoundError
 
+@pytest.fixture(scope="module")
+def gb():
+    """Fixture for GetBusco instance."""
+    instance = GetBusco()
+    yield instance
+    instance.close()
 
-class TestGetBuscoLoad(TestCase):
-    def test_load_busco_data(self):
-        load_lineages_to_json(
-            out_json=f'{ROOT}/data/busco_datasets.json',
-            busco_download_path='/home/thomas/sshfs/data/projects/p446_Dialact_Phoenix/2_analyses/B_pacbio/2024.01.24_assemblies/busco_downloads'
-        )
-
-
-class TestGetBusco(TestCase):
-    def setUp(self) -> None:
-        self.gb = GetBusco()
-
-    def test_get_busco_dataset(self):
+class TestGetBusco:
+    def test_get_busco_dataset(self, gb):
         # Lactobacillus paracasei
-        self.assertEqual("lactobacillales_odb10", self.gb.get_busco_dataset(1597))
+        assert gb.get_busco_dataset(1597) == "lactobacillales_odb10"
 
-    def test_get_busco_dataset_nonexistent_taxid(self):
+    def test_get_busco_dataset_nonexistent_taxid(self, gb):
         # nonexistent taxid: 3
-        with self.assertRaises(TaxIdNnotFoundError):
-            self.gb.get_busco_dataset(3)
+        with pytest.raises(TaxIdNnotFoundError):
+            gb.get_busco_dataset(3)
 
-    def test_get_busco_dataset_nonexistent_busco_parent(self):
+    def test_get_busco_dataset_nonexistent_busco_parent(self, gb):
         # root-node has no busco-parent: 1
-        with self.assertRaises(BuscoParentNotFoundError):
-            self.gb.get_busco_dataset(1)
+        with pytest.raises(BuscoParentNotFoundError):
+            gb.get_busco_dataset(1)

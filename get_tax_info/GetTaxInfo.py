@@ -34,11 +34,15 @@ class GetTaxInfo:
             else:
                 self.update_ncbi_taxonomy_from_web()
 
-        self.db = sqlite3.connect(self.sqlite_db, uri=True, check_same_thread=False).cursor()  # uri=True means read-only mode
+        self.conn = sqlite3.connect(self.sqlite_db, uri=True, check_same_thread=False)
+        self.db = self.conn.cursor()  # self.db is the cursor for backwards compatibility
+
+    def close(self):
+        if hasattr(self, 'conn'):
+            self.conn.close()
 
     def __del__(self):
-        if hasattr(self, 'db'):
-            self.db.close()
+        self.close()
 
     def get_children_by_id(self, parent_taxid, size=None) -> [(int, str, str, int, str)]:
         """

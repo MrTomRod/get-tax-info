@@ -1,0 +1,50 @@
+[project]
+name = "get-tax-info"
+version = "0.1.0"
+description = "Convert NCBI TaxIDs to scientific species names and vice-versa"
+readme = "README.md"
+authors = [
+    { name = "Thomas Roder", email = "roder.thomas@gmail.com" }
+]
+license = { text = "MIT" }
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "fire",
+    "pandas",
+]
+
+[project.urls]
+Homepage = "https://github.com/MrTomRod/get-tax-info"
+
+[project.scripts]
+get-tax-info = "get_tax_info.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["test"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+python_classes = ["Test*"]
+addopts = "--cov=get_tax_info --cov-report=term-missing"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["get_tax_info"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.2",
+    "pytest-cov>=7.0.0",
+]
