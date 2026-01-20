@@ -1,4 +1,4 @@
-from get_tax_info import UniqueNameNotFoundError
+from get_tax_info.utils import UniqueNameNotFoundError
 from get_tax_info.GetTaxInfo import GetTaxInfo
 from get_tax_info.GetBusco import GetBusco
 
@@ -94,6 +94,51 @@ def add_taxid_busco_column(
 
     print(f'\nPreview:\n{df.head()}\n')
 
+    input('Press Enter to write to file...')
+
+    df.to_csv(csv + '.addcol', sep=sep, index=False)
+
+    print(f'Wrote {csv}.addcol')
+
+
+def add_identifier_column(
+        ogb_folder_structure: str,
+        csv: str,
+        sep: str = '\t',
+        format: str = '{name}-{i}',
+        name_column: str = 'BioSample',
+        identifier_column: str = 'Identifier',
+):
+    import os
+    import glob
+    import pandas as pd
+
+    df = pd.read_csv(csv, delimiter=sep, index_col=False)
+
+    print(f'Preview:\n{df.head()}\n')
+
+    print('Loading all identifiers...')
+    all_identifiers = set(
+        os.path.basename(f) for f in glob.glob(f'{ogb_folder_structure}/organisms/*/genomes/*')
+    )
+    print(len(all_identifiers))
+    print(list(all_identifiers)[:10])
+
+    # Add identifier column
+    def get_identifier(name):
+        for i in range(1, 1000):
+            identifier = format.format(name=name, i=i)
+            if identifier not in all_identifiers:
+                all_identifiers.add(identifier)
+                return identifier
+        raise ValueError(f'Could not find a unique identifier for {name}')
+
+    df[identifier_column] = df[name_column].apply(get_identifier)
+
+    print(f'\nPreview:\n{df.head()}\n')
+
+    input('Press Enter to write to file...')
+
     df.to_csv(csv + '.addcol', sep=sep, index=False)
 
     print(f'Wrote {csv}.addcol')
@@ -105,7 +150,8 @@ def main():
     Fire({
         'init': init,
         'taxid-to-busco-dataset': taxid_to_busco_dataset,
-        'add-taxid-column': add_taxid_busco_column
+        'add-taxid-column': add_taxid_busco_column,
+        'add-identifier-column': add_identifier_column
     })
 
 
