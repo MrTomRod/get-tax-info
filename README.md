@@ -10,7 +10,7 @@ Load NCBI taxonomy (`names.dmp` and `nodes.dmp`) into a SQLite database for ligh
 
 ## Installation
 ```bash
-pip install git+https://github.com/MrTomRod/get-tax-info
+pip install get-tax-info
 ```
 
 ## Configuration
