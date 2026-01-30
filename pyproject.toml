@@ -1,6 +1,6 @@
 [project]
 name = "get-tax-info"
-version = "0.2.0"
+version = "0.2.1"
 description = "Convert NCBI TaxIDs to scientific species names and vice-versa"
 readme = "README.md"
 authors = [
