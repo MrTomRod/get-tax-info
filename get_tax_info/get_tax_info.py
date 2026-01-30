@@ -186,6 +186,42 @@ class GetTaxInfo:
 
         return taxids
 
+    def query_taxid_id_fuzzy(self, query, rank: str = None, size: int = 20, startswith=True) -> list:
+        """
+        Search for taxids by partial taxid matching. Returns list of results.
+
+        :param query: integer or string representing partial taxid
+        :param rank: optional, taxonomic rank. example: 'species' or 'genus'
+        :param size: number of results to be returned. default = 20, for all results, set to None
+        :param startswith: if True: taxids start with query; if False: taxids contain query
+        :returns: list of tuples: [(taxid, scientific_name, unique_name, parent, rank), ...]
+        """
+        # Ensure query is a string to apply wildcards for the LIKE operation
+        query_str = f'{query}%' if startswith else f'%{query}%'
+
+        if rank:
+            self.db.execute('''
+                SELECT taxid, scientific_name, unique_name, parent, rank
+                FROM taxids
+                WHERE rank IS ?
+                    AND CAST(taxid AS TEXT) LIKE ?
+                ORDER BY taxid
+            ''', (rank, query_str))
+        else:
+            self.db.execute('''
+                SELECT taxid, scientific_name, unique_name, parent, rank
+                FROM taxids
+                WHERE CAST(taxid AS TEXT) LIKE ?
+                ORDER BY taxid
+            ''', (query_str,))
+
+        if size:
+            taxids = self.db.fetchmany(size=size)
+        else:
+            taxids = self.db.fetchall()
+
+        return taxids if taxids else []
+
     def update_ncbi_taxonomy_from_web(self):
         """
         Download taxdump.tar.gz from ftp.ncbi.nlm.nih.gov,

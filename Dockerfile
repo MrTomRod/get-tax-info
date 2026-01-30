@@ -2,6 +2,7 @@
 FROM docker.io/ezlabgva/busco:v6.0.0_cv1 AS downloader
 USER root
 RUN busco --download bacteria_odb12 --download_path /busco_downloads
+
 # Prepare a minimal structure with only the config files (enough for get-tax-info to index)
 RUN mkdir /minimal && \
     cd /busco_downloads && \
