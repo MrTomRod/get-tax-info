@@ -2,6 +2,9 @@
 
 Load NCBI taxonomy (`names.dmp` and `nodes.dmp`) into a SQLite database for lightning-fast hash-based lookups.
 
+> [!CAUTION]
+> A very similar solution was created by [ete4](https://github.com/etetoolkit/ete4) / [ncbiquery.py](https://github.com/etetoolkit/ete4/blob/ete4/ete4/ncbi_taxonomy/ncbiquery.py) - I suppose most people should use that implementation instead.
+
 ## Features
 - **Fast**: Indexed SQLite queries for names, parents, and children.
 - **Automatic**: Downloads and converts NCBI data on first run.
