@@ -2,7 +2,8 @@
 import json
 import os.path
 
-from .get_tax_info import GetTaxInfo, platformdirs
+from .config import AppConfig, resolve_config
+from .get_tax_info import GetTaxInfo
 from .tax_id import TaxID
 from .utils import BuscoParentNotFoundError, ROOT, UniqueNameNotFoundError, query_options
 
@@ -59,20 +60,28 @@ def load_lineages_to_json(out_json: str, busco_download_path: str = 'busco_downl
 
 class GetBusco(GetTaxInfo):
     busco_dataset: {int: str}
-    _busco_datasets_json = None
 
-    def __init__(self, *args, busco_download_path: str = None, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(
+            self,
+            db_path: str = None,
+            taxdump_tar: str = None,
+            reload_data: bool = False,
+            busco_download_path: str = None,
+            config: AppConfig = None
+    ):
+        config = resolve_config(
+            config,
+            db_path=db_path,
+            taxdump_tar=taxdump_tar,
+            busco_download_path=busco_download_path,
+        )
 
-        if self._busco_datasets_json is None:
-            cache_dir = platformdirs.user_cache_dir('get-tax-info')
-            self._busco_datasets_json = os.path.join(cache_dir, 'busco_datasets.json')
+        super().__init__(reload_data=reload_data, config=config)
 
-        reload_data = kwargs.get('reload_data', False)
+        self._busco_datasets_json = self.config.busco_json_path
+
         if not os.path.isfile(self._busco_datasets_json) or reload_data:
-            if busco_download_path is None:
-                busco_download_path = os.environ.get('BUSCO_DOWNLOAD_PATH', 'busco_downloads')
-            load_lineages_to_json(self._busco_datasets_json, busco_download_path)
+            load_lineages_to_json(self._busco_datasets_json, self.config.busco_download_path)
 
         with open(self._busco_datasets_json) as f:
             self.busco_dataset = json.load(f)
