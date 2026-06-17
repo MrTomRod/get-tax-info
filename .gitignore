@@ -18,6 +18,7 @@ build/
 
 # Project Specific
 .bkp/
+busco_downloads/
 
 # IDEs
 .idea/

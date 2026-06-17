@@ -1,8 +1,8 @@
 import os
 import sqlite3
-import platformdirs
 from .tax_id import TaxID
 from .utils import ROOT, TaxIdNnotFoundError, UniqueNameNotFoundError, NameNotFoundError
+from .config import AppConfig, resolve_config
 
 
 class GetTaxInfo:
@@ -25,17 +25,22 @@ class GetTaxInfo:
         TaxID of parent in taxonomic tree
     """
 
-    def __init__(self, db_path: str = None, taxdump_tar: str = None, reload_data: bool = False):
-        if db_path is None:
-            cache_dir = platformdirs.user_cache_dir('get-tax-info')
-            os.makedirs(cache_dir, exist_ok=True)
-            db_path = os.environ.get('GET_TAX_INFO_DB', os.path.join(cache_dir, 'taxdump.db'))
-        self.sqlite_db = os.path.expanduser(db_path)
+    def __init__(
+            self,
+            db_path: str = None,
+            taxdump_tar: str = None,
+            reload_data: bool = False,
+            config: AppConfig = None
+    ):
+        config = resolve_config(config, db_path=db_path, taxdump_tar=taxdump_tar)
 
-            
+        config.ensure_directories()
+        self.config = config
+        self.sqlite_db = config.db_path
+
         if reload_data or not os.path.isfile(self.sqlite_db):
-            if taxdump_tar:
-                self.update_ncbi_taxonomy_from_file(taxdump_tar)
+            if config.taxdump_tar:
+                self.update_ncbi_taxonomy_from_file(config.taxdump_tar)
             else:
                 self.update_ncbi_taxonomy_from_web()
 

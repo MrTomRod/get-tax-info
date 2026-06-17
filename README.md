@@ -17,8 +17,38 @@ pip install get-tax-info
 ```
 
 ## Configuration
-By default, the database is stored in the user cache directory (e.g., `~/.cache/get-tax-info/`).
-- Change location: Set `GET_TAX_INFO_DB` environment variable or pass `db_path` to `GetTaxInfo`.
+Path resolution uses this precedence:
+1. Explicit constructor arguments (or `AppConfig` fields)
+2. Environment variables
+3. `platformdirs.user_cache_dir("get-tax-info")` defaults
+
+Default cache locations (Linux example):
+- DB: `~/.cache/get-tax-info/taxdump.db`
+- BUSCO json: `~/.cache/get-tax-info/busco_datasets.json`
+
+Supported environment variables:
+- `GET_TAX_INFO_CACHE_DIR`
+- `GET_TAX_INFO_DB`
+- `GET_TAX_INFO_BUSCO_JSON`
+- `GET_TAX_INFO_BUSCO_DOWNLOADS`
+- `GET_TAX_INFO_TAXDUMP_TAR`
+
+Legacy fallback still supported for BUSCO downloads:
+- `BUSCO_DOWNLOAD_PATH`
+
+Programmatic config for embedded usage:
+
+```python
+from get_tax_info import AppConfig, GetTaxInfo, GetBusco
+
+cfg = AppConfig.from_sources(
+	cache_dir="/data/get-tax-info",
+	busco_download_path="/data/busco_downloads",
+)
+
+gti = GetTaxInfo(config=cfg)
+gb = GetBusco(config=cfg)
+```
 
 ## Python Usage
 ```python
@@ -41,8 +71,18 @@ genus = t.tax_at_rank('genus')
 
 ## CLI Usage
 ```bash
+# Print effective resolved paths (useful in Docker/CI debugging)
+get-tax-info show-config
+
 # Get BUSCO dataset for a TaxID
 get-tax-info taxid-to-busco-dataset --taxid 110
+
+# Override cache/json paths explicitly (CLI args > env vars > defaults)
+get-tax-info taxid-to-busco-dataset \
+  --taxid 1597 \
+  --cache_dir /data/get-tax-info \
+  --busco_json_path /data/get-tax-info/busco_datasets.json \
+  --busco_download_path /data/busco_downloads
 
 # Add TaxID and BUSCO column to a CSV/TSV table
 get-tax-info add-taxid-column table.tsv --sep ,

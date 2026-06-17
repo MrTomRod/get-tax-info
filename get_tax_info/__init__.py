@@ -12,4 +12,5 @@ except Exception:
 from .tax_id import TaxID
 from .get_tax_info import GetTaxInfo
 from .get_busco import GetBusco
+from .config import AppConfig
 from .utils import TaxIdNnotFoundError, UniqueNameNotFoundError, NameNotFoundError, BuscoParentNotFoundError
